@@ -4,6 +4,8 @@ const COLS = 10;
 const ROWS = 20;
 const BLOCK_SIZE = Math.min(canvasEl.width / COLS, canvasEl.height / ROWS);
 
+let currentTetromino = getRandomTetromino()
+
 const TETROMINOS = {
   I: [[1, 1, 1, 1]],
   O: [[1, 1], [1, 1]],
@@ -14,6 +16,12 @@ const TETROMINOS = {
   L: [[0, 0, 1], [1, 1, 1]]
 };
 
+
+function getRandomTetromino() {
+  const keys = Object.keys(TETROMINOS);
+  const randomIndex = Math.floor(Math.random() * keys.length)
+  return TETROMINOS[keys[randomIndex]];
+}
 
 function drawGrid() {
     canvasContext.strokeStyle = 'gray';
