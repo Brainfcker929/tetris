@@ -1,19 +1,9 @@
+import { TETROMINOS } from "./tetrisShapes.js";
 const canvasEl = document.getElementById("gameCanvas")
 const canvasContext = canvasEl.getContext('2d');
 const COLS = 10;
 const ROWS = 20;
 const BLOCK_SIZE = Math.min(canvasEl.width / COLS, canvasEl.height / ROWS);
-
-const TETROMINOS = {
-  I: [[1, 1, 1, 1]],
-  O: [[1, 1], [1, 1]],
-  T: [[0, 1, 0], [1, 1, 1]],
-  S: [[0, 1, 1], [1, 1, 0]],
-  Z: [[1, 1, 0], [0, 1, 1]],
-  J: [[1, 0, 0], [1, 1, 1]],
-  L: [[0, 0, 1], [1, 1, 1]]
-};
-
 
 function getRandomTetromino() {
   const keys = Object.keys(TETROMINOS);
@@ -31,9 +21,9 @@ function drawGrid() {
 }
 
 function drawTetromino () {
-  canvasContext.fillStyle = "red";
-  currentTetromino = getRandomTetromino()
-  currentTetromino.forEach((row, rowIndex) => {
+  const currentTetromino = getRandomTetromino()
+  canvasContext.fillStyle = currentTetromino.color;
+  currentTetromino.form.forEach((row, rowIndex) => {
     row.forEach((col, collIndex) => {
       if(col){
         canvasContext.fillRect(collIndex * BLOCK_SIZE, rowIndex * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE)
