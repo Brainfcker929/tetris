@@ -5,6 +5,19 @@ const COLS = 10;
 const ROWS = 20;
 const BLOCK_SIZE = Math.min(canvasEl.width / COLS, canvasEl.height / ROWS);
 
+
+/*
+TODO:
+fall animation,
+collision with wall and blocks,
+score,
+delete blocks,
+block roation,
+move blocks,
+roation display,
+fast drop,
+shift blocks after scoring
+*/
 function getRandomTetromino() {
   const keys = Object.keys(TETROMINOS);
   const randomIndex = Math.floor(Math.random() * keys.length)
