@@ -26,7 +26,7 @@ function drawTetromino () {
   currentTetromino.form.forEach((row, rowIndex) => {
     row.forEach((col, collIndex) => {
       if(col){
-        canvasContext.fillRect(collIndex * BLOCK_SIZE, rowIndex * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE)
+        canvasContext.fillRect(collIndex * BLOCK_SIZE, rowIndex * BLOCK_SIZE, BLOCK_SIZE - 1, BLOCK_SIZE - 1)
       }
     })
   })
