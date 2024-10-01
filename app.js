@@ -4,8 +4,6 @@ const COLS = 10;
 const ROWS = 20;
 const BLOCK_SIZE = Math.min(canvasEl.width / COLS, canvasEl.height / ROWS);
 
-let currentTetromino = getRandomTetromino()
-
 const TETROMINOS = {
   I: [[1, 1, 1, 1]],
   O: [[1, 1], [1, 1]],
@@ -32,4 +30,21 @@ function drawGrid() {
     }
 }
 
-drawGrid();
+function drawTetromino () {
+  canvasContext.fillStyle = "red";
+  currentTetromino = getRandomTetromino()
+  currentTetromino.forEach((row, rowIndex) => {
+    row.forEach((col, collIndex) => {
+      if(col){
+        canvasContext.fillRect(collIndex * BLOCK_SIZE, rowIndex * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE)
+      }
+    })
+  })
+}
+
+function draw(){
+  drawGrid()
+  drawTetromino()
+}
+
+draw()
