@@ -6,7 +6,7 @@ const canvasContext = canvasEl.getContext('2d');
 const COLS = 10;
 const ROWS = 20;
 const BLOCK_SIZE = Math.min(canvasEl.width / COLS, canvasEl.height / ROWS);
-const playField = Array.from({ length: ROWS}, () => Array(COLS).fill(0));
+const playField = resetPlayField();
 
 let currentTetromino = getRandomTetromino()
 let tetrominoPosition = { x:3, y:0 }
@@ -20,6 +20,11 @@ roation display,
 fast drop,
 shift blocks after scoring
 */
+
+function resetPlayField() {
+  return Array.from({ length: ROWS}, () => Array(COLS).fill(0));
+}
+
 function getRandomTetromino() {
   const keys = Object.keys(TETROMINOS);
   const randomIndex = Math.floor(Math.random() * keys.length)
@@ -61,7 +66,7 @@ function isCollision() {
         const newY = tetrominoPosition.y + rowIndex;
         return (
           newX < 0 || newX >= COLS || newY >= ROWS ||
-          (newY >= 0 && playField[newY][newX])
+          (newY >= 0 && playField[newY]?.[newX])
         );
       }
       return false;
@@ -80,7 +85,11 @@ function placeTetromino() {
       if (col) {
         const playFieldX = tetrominoPosition.x + colIndex;
         const playFieldY = tetrominoPosition.y + rowIndex;
-        playField[playFieldY][playFieldX] = col;
+        if(playField[playFieldY]?.[playFieldX] === undefined) {
+          alert("Game Over")
+          playField = resetPlayField();
+        }
+          playField[playFieldY][playFieldX] = col;
       }
     });
   });
@@ -96,6 +105,16 @@ function fallTetromino() {
   }
 }
 
+function hardDrop() {
+  while(!isCollision()) {
+    tetrominoPosition.y++;
+  }
+  tetrominoPosition.y--;
+  placeTetromino();
+  resetTetromino();
+  draw()
+}
+
 function draw() {
   canvasContext.clearRect(0, 0, canvasEl.width, canvasEl.height);
   drawPlayField();
@@ -106,5 +125,11 @@ function gameLoop() {
   fallTetromino();
   draw();
 }
+
+document.addEventListener("keydown", ({code}) => {
+  if(code === "Space") {
+    hardDrop()
+  }
+});
 
 setInterval(gameLoop, 500)
