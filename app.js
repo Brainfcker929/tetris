@@ -54,22 +54,19 @@ function drawPlayField() {
 }
 
 function isCollision() {
-  for (let row = 0; row < currentTetromino.form.length; row++) {
-    for (let col = 0; col < currentTetromino.form[row].length; col++) {
-      if (currentTetromino.form[row][col]) {
-        let newX = tetrominoPosition.x + col;
-        let newY = tetrominoPosition.y + row;
-        
-        if (
+  return currentTetromino.form.some((row, rowIndex) => 
+    row.some((col, colIndex) => {
+      if (col) {
+        const newX = tetrominoPosition.x + colIndex;
+        const newY = tetrominoPosition.y + rowIndex;
+        return (
           newX < 0 || newX >= COLS || newY >= ROWS ||
           (newY >= 0 && playField[newY][newX])
-        ) {
-          return true;
-        }
+        );
       }
-    }
-  }
-  return false;
+      return false;
+    })
+  );
 }
 
 function resetTetromino() {
@@ -81,8 +78,8 @@ function placeTetromino() {
   currentTetromino.form.forEach((row, rowIndex) => {
     row.forEach((col, colIndex) => {
       if (col) {
-        let playFieldX = tetrominoPosition.x + colIndex;
-        let playFieldY = tetrominoPosition.y + rowIndex;
+        const playFieldX = tetrominoPosition.x + colIndex;
+        const playFieldY = tetrominoPosition.y + rowIndex;
         playField[playFieldY][playFieldX] = col;
       }
     });
