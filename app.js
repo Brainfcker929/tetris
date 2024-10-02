@@ -1,24 +1,17 @@
 import { TETROMINOS } from "./tetrisShapes.js";
+
 const canvasEl = document.getElementById("gameCanvas")
 const canvasContext = canvasEl.getContext('2d');
+
 const COLS = 10;
 const ROWS = 20;
 const BLOCK_SIZE = Math.min(canvasEl.width / COLS, canvasEl.height / ROWS);
-const playField = [];
+const playField = Array.from({ length: ROWS}, () => Array(COLS).fill(0));
 
 let currentTetromino = getRandomTetromino()
 let tetrominoPosition = { x:3, y:0 }
-
-for (let row = 0; row < ROWS; row++) {
-  playField[row] = []
-  for (let col = 0; col < COLS; col++) {
-    playField[row][col] = 0;
-  }
-}
 /*
 TODO:
-fall animation,
-collision with wall and blocks,
 score,
 delete blocks,
 block roation,
