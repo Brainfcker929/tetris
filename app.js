@@ -4,8 +4,17 @@ const canvasContext = canvasEl.getContext('2d');
 const COLS = 10;
 const ROWS = 20;
 const BLOCK_SIZE = Math.min(canvasEl.width / COLS, canvasEl.height / ROWS);
+const playField = [];
 
+let currentTetromino = getRandomTetromino()
+let tetrominoPosition = { x:3, y:0 }
 
+for (let row = 0; row < ROWS; row++) {
+  playField[row] = []
+  for (let col = 0; col < COLS; col++) {
+    playField[row][col] = 0;
+  }
+}
 /*
 TODO:
 fall animation,
@@ -24,30 +33,88 @@ function getRandomTetromino() {
   return TETROMINOS[keys[randomIndex]];
 }
 
-function drawGrid() {
-    canvasContext.strokeStyle = 'gray';
-    for (let x = 0; x < COLS; x++) {
-        for (let y = 0; y < ROWS; y++) {
-            canvasContext.strokeRect(x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
-        }
-    }
-}
-
-function drawTetromino () {
-  const currentTetromino = getRandomTetromino()
-  canvasContext.fillStyle = currentTetromino.color;
+function drawTetromino() {
   currentTetromino.form.forEach((row, rowIndex) => {
-    row.forEach((col, collIndex) => {
+    row.forEach((col, colIndex) => {
       if(col){
-        canvasContext.fillRect(collIndex * BLOCK_SIZE, rowIndex * BLOCK_SIZE, BLOCK_SIZE - 1, BLOCK_SIZE - 1)
+        canvasContext.fillStyle = currentTetromino.color;
+        canvasContext.fillRect(
+          (tetrominoPosition.x + colIndex) * BLOCK_SIZE,
+          (tetrominoPosition.y + rowIndex) * BLOCK_SIZE,
+          BLOCK_SIZE - 1,
+          BLOCK_SIZE - 1)
       }
     })
   })
 }
 
-function draw(){
-  drawGrid()
-  drawTetromino()
+function drawPlayField() {
+  for (let row = 0; row < ROWS; row++) {
+    for (let col = 0; col < COLS; col++) {
+      if (playField[row][col]) {
+        canvasContext.fillStyle = 'gray';
+        canvasContext.strokeRect(col * BLOCK_SIZE, row * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+        canvasContext.fillRect(col * BLOCK_SIZE, row * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+      }
+    }
+  }
 }
 
-draw()
+function isCollision() {
+  for (let row = 0; row < currentTetromino.form.length; row++) {
+    for (let col = 0; col < currentTetromino.form[row].length; col++) {
+      if (currentTetromino.form[row][col]) {
+        let newX = tetrominoPosition.x + col;
+        let newY = tetrominoPosition.y + row;
+        
+        if (
+          newX < 0 || newX >= COLS || newY >= ROWS ||
+          (newY >= 0 && playField[newY][newX])
+        ) {
+          return true;
+        }
+      }
+    }
+  }
+  return false;
+}
+
+function resetTetromino() {
+  currentTetromino = getRandomTetromino();
+  tetrominoPosition = { x: 3, y: 0 };
+}
+
+function placeTetromino() {
+  currentTetromino.form.forEach((row, rowIndex) => {
+    row.forEach((col, colIndex) => {
+      if (col) {
+        let playFieldX = tetrominoPosition.x + colIndex;
+        let playFieldY = tetrominoPosition.y + rowIndex;
+        playField[playFieldY][playFieldX] = col;
+      }
+    });
+  });
+}
+
+
+function fallTetromino() {
+  tetrominoPosition.y++;
+  if (isCollision()) {
+    tetrominoPosition.y--;
+    placeTetromino();
+    resetTetromino();
+  }
+}
+
+function draw() {
+  canvasContext.clearRect(0, 0, canvasEl.width, canvasEl.height);
+  drawPlayField();
+  drawTetromino();
+}
+
+function gameLoop() {
+  fallTetromino();
+  draw();
+}
+
+setInterval(gameLoop, 500)
